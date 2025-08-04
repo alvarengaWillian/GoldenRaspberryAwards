@@ -1,0 +1,196 @@
+{
+	"info": {
+		"_postman_id": "9182d279-a645-4f38-9723-b830e9dc1bc8",
+		"name": "Golden Awards",
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "9582144"
+	},
+	"item": [
+		{
+			"name": "Create Movie",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"HOHO II\",\n    \"studios\": \"FILME\",\n    \"producers\": \"HOHO\",\n    \"year\": \"2025\",\n    \"winner\": true\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/movies"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Movies",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/movies?onlyWinners=false&greaterThanYear=2000&lessThanYear=2010",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"movies"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "FILME",
+							"disabled": true
+						},
+						{
+							"key": "specificYear",
+							"value": "2023",
+							"disabled": true
+						},
+						{
+							"key": "onlyWinners",
+							"value": "false"
+						},
+						{
+							"key": "greaterThanYear",
+							"value": "2000"
+						},
+						{
+							"key": "lessThanYear",
+							"value": "2010"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Winners Consecutive",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/awards/max-and-min-winner",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"awards",
+						"max-and-min-winner"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "FILME",
+							"disabled": true
+						},
+						{
+							"key": "specificYear",
+							"value": "2023",
+							"disabled": true
+						},
+						{
+							"key": "greaterThanYear",
+							"value": "2000",
+							"disabled": true
+						},
+						{
+							"key": "lessThanYear",
+							"value": "2010",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update Movie",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"HAHA - 2024\",\n    \"studios\": \"HAHA - 2024\",\n    \"producers\": \"HAHA - 2024\",\n    \"year\": \"2024\",\n    \"winner\": false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/movies/207"
+			},
+			"response": []
+		},
+		{
+			"name": "Update Partial",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"title\": \"HAHA - 2023\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": "localhost:8080/movies/207"
+			},
+			"response": []
+		},
+		{
+			"name": "Deletar Movie",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": "localhost:8080/movies/207"
+			},
+			"response": []
+		},
+		{
+			"name": "Get All Winners Consecutive Copy",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "localhost:8080/awards",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"awards"
+					],
+					"query": [
+						{
+							"key": "title",
+							"value": "FILME",
+							"disabled": true
+						},
+						{
+							"key": "specificYear",
+							"value": "2023",
+							"disabled": true
+						},
+						{
+							"key": "greaterThanYear",
+							"value": "2000",
+							"disabled": true
+						},
+						{
+							"key": "lessThanYear",
+							"value": "2010",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
