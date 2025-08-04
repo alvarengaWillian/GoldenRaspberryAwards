@@ -126,3 +126,5 @@ Ou caso for de preferencia, há swagger para utilizarem
   http://localhost:3004/swagger-ui/index.html
 ```
 
+---
+
