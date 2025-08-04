@@ -17,7 +17,7 @@ Antes de rodar a aplicação, você precisa ter:
 Feito clone do projeto em sua maquina
 
 ```bash
-git clone https://github.com/alvarengaWillian/GoldenAwards.git
+git clone https://github.com/alvarengaWillian/GoldenRaspberryAwards.git
 ```
 
 Navegar ate a pasta do projeto
