@@ -22,7 +22,7 @@ git clone https://github.com/alvarengaWillian/GoldenRaspberryAwards.git
 
 Navegar ate a pasta do projeto
 ```bash
-  cd GoldenAwards
+  cd GoldenRaspberryAwards
 ```
 
 ---
