@@ -10,86 +10,73 @@ import java.util.List;
 
 public interface MovieRepository extends JpaRepository<Movie, Long>, JpaSpecificationExecutor<Movie> {
 
-	@Query(nativeQuery = true,
-			value =
-			"""
-				 (
-					SELECT *
-					FROM (
-						SELECT
-							previousMovie.producers as producer,
-							CAST(previousMovie.movie_year AS INT) AS previousWin,
-							CAST(followingMovie.movie_year AS INT) AS followingWin,
-							ABS(CAST(followingMovie.movie_year AS INT) - CAST(previousMovie.movie_year AS INT)) AS interval_years
-						FROM movie previousMovie
-						JOIN movie followingMovie
-						  ON previousMovie.producers = followingMovie.producers
-						 AND previousMovie.winner = TRUE
-						 AND followingMovie.winner = TRUE
-						 AND CAST(previousMovie.movie_year AS INT) < CAST(followingMovie.movie_year AS INT)
-					) AS intervals
-				)
-			"""
-	)
+	@Query(nativeQuery = true, value = """
+		 (
+			SELECT *
+			FROM (
+				SELECT\s
+					movie.producers as producer,
+					CAST(movie.movie_year AS INT) AS previousWin,
+					LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) AS followingWin,
+					ABS(LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) - CAST(movie.movie_year AS INT)) AS interval_years
+				FROM movie
+				WHERE winner = TRUE
+			) AS consecutive_wins
+			WHERE followingWin IS NOT NULL
+			ORDER BY previousWin
+    	 );
+	""")
 	List<AwardResponseDTO> findMaxAndMinConsecutiveWinner();
 
 
 	@Query(nativeQuery = true, value = """
 		 (
-        SELECT *
-        FROM (
-            SELECT\s
-                previousMovie.producers as producer,
-                CAST(previousMovie.movie_year AS INT) AS previousWin,
-                CAST(followingMovie.movie_year AS INT) AS followingWin,
-                ABS(CAST(followingMovie.movie_year AS INT) - CAST(previousMovie.movie_year AS INT)) AS interval_years
-            FROM movie previousMovie
-            JOIN movie followingMovie
-              ON previousMovie.producers = followingMovie.producers
-             AND previousMovie.winner = TRUE
-             AND followingMovie.winner = TRUE
-             AND CAST(previousMovie.movie_year AS INT) < CAST(followingMovie.movie_year AS INT)
-        ) AS intervals
-        WHERE interval_years = (
-            SELECT MIN(ABS(CAST(followingMovie.movie_year AS INT) - CAST(previousMovie.movie_year AS INT)))
-            FROM movie previousMovie
-            JOIN movie followingMovie
-              ON previousMovie.producers = followingMovie.producers
-             AND previousMovie.winner = TRUE
-             AND followingMovie.winner = TRUE
-             AND CAST(previousMovie.movie_year AS INT) < CAST(followingMovie.movie_year AS INT)
-        )
-    )
+			SELECT *
+			FROM (
+				SELECT\s
+					movie.producers as producer,
+					CAST(movie.movie_year AS INT) AS previousWin,
+					LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) AS followingWin,
+					ABS(LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) - CAST(movie.movie_year AS INT)) AS interval_years
+				FROM movie
+				WHERE winner = TRUE
+			) AS consecutive_wins
+			WHERE followingWin IS NOT NULL AND interval_years = (
+				SELECT MIN(interval_years)
+				FROM (
+					SELECT\s
+						LEAD(CAST(movie_year AS INT)) OVER (PARTITION BY producers ORDER BY CAST(movie_year AS INT)) - CAST(movie_year AS INT) AS interval_years
+					FROM movie
+					WHERE winner = TRUE
+				) as all_intervals
+			)
+    	 );
 	""")
 	List<AwardResponseDTO> findMinConsecutiveWinner();
 
 
 	@Query(nativeQuery = true, value = """
 		 (
-        SELECT *
-        FROM (
-            SELECT\s
-                previousMovie.producers as producer,
-                CAST(previousMovie.movie_year AS INT) AS previousWin,
-                CAST(followingMovie.movie_year AS INT) AS followingWin,
-                ABS(CAST(followingMovie.movie_year AS INT) - CAST(previousMovie.movie_year AS INT)) AS interval_years
-            FROM movie previousMovie
-            JOIN movie followingMovie
-              ON previousMovie.producers = followingMovie.producers
-             AND previousMovie.winner = TRUE
-             AND followingMovie.winner = TRUE
-             AND CAST(previousMovie.movie_year AS INT) < CAST(followingMovie.movie_year AS INT)
-        ) AS intervals
-        WHERE interval_years = (
-            SELECT MAX(ABS(CAST(followingMovie.movie_year AS INT) - CAST(previousMovie.movie_year AS INT)))
-            FROM movie previousMovie
-            JOIN movie followingMovie
-              ON previousMovie.producers = followingMovie.producers
-             AND previousMovie.winner = TRUE
-             AND followingMovie.winner = TRUE
-             AND CAST(previousMovie.movie_year AS INT) < CAST(followingMovie.movie_year AS INT)
-        )
-    );  
+			SELECT *
+			FROM (
+				SELECT\s
+					movie.producers as producer,
+					CAST(movie.movie_year AS INT) AS previousWin,
+					LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) AS followingWin,
+					ABS(LEAD(CAST(movie.movie_year AS INT)) OVER ( PARTITION BY producers ORDER BY CAST(movie_year AS INT) ) - CAST(movie.movie_year AS INT)) AS interval_years
+				FROM movie
+				WHERE winner = TRUE
+			) AS consecutive_wins
+			WHERE followingWin IS NOT NULL AND interval_years = (
+				SELECT MAX(interval_years)
+				FROM (
+					SELECT\s
+						LEAD(CAST(movie_year AS INT)) OVER (PARTITION BY producers ORDER BY CAST(movie_year AS INT)) - CAST(movie_year AS INT) AS interval_years
+					FROM movie
+					WHERE winner = TRUE
+				) as all_intervals
+			)
+    	 );
 	""")
 	List<AwardResponseDTO> findMaxConsecutiveWinner();
 
