@@ -226,9 +226,6 @@ class GoldenRaspberryIntegrationTest extends GoldenRaspberryApplicationTests {
 
 	@Test
 	void shouldReturnEmptyAwards() throws Exception {
-		insertMovie("Test I", "Matthew Vaughn", "1980", true );
-		insertMovie("Test II", "Matthew Vaughn", "2003", true );
-
 		ResultActions result = mockMvc.perform(get("/awards/max-and-min-winner"));
 
 		result.andExpect(status().isOk());
